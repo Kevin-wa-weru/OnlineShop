@@ -118,6 +118,7 @@ class _SignFormState extends State<SignForm> {
                           _formKey.currentState.save();
                           // if all are valid then go to success screen
                           // _submitForm();
+
                           Navigator.push(
                               context,
                               MaterialPageRoute(

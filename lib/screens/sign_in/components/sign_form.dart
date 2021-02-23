@@ -9,6 +9,7 @@ import '../../../constants.dart';
 import '../../../size_config.dart';
 import 'package:shop_app/components/no_account_text.dart';
 import '../../home/home_screen.dart';
+import '../../Administrator/adminview.dart';
 
 class SignForm extends StatefulWidget {
   @override
@@ -144,11 +145,19 @@ class _SignFormState extends State<SignForm> {
                           _formKey.currentState.save();
                           // if all are valid then go to success screen
                           _submitForm();
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreen(),
-                              ));
+                          if (email.trim() == "admin@gmail.com") {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        AdminView()));
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeScreen(),
+                                ));
+                          }
                         }
                       },
                       isLoading: _loginFormLoading,

@@ -5,90 +5,117 @@ import 'package:fl_chart/fl_chart.dart';
 // import 'pie_chart_sections.dart';
 
 class Revenue extends StatefulWidget {
+  final fpercent;
+  final spercent;
+  final apprevenue;
+  final stotal;
+  final ftotal;
+
+  const Revenue(
+      {Key key,
+      this.fpercent,
+      this.spercent,
+      this.apprevenue,
+      this.stotal,
+      this.ftotal})
+      : super(key: key);
   @override
   _RevenueState createState() => _RevenueState();
 }
 
 class _RevenueState extends State<Revenue> {
   int touchedIndex;
-  var totalfastpay = 0;
-  var totalsharedpay = 0;
-  var apprevenue = 0;
+  // var totalfastpay = 0;
+  // var totalsharedpay = 0;
+  // var apprevenue = 0;
   var fastpercent;
   var sharedpercent;
-  bool chartloader = true;
-  bool loader = true;
-  getAnalysis() async {
-    // setState(() {
-    //   loader = true;
-    //   // chartloader = true;
-    // });
+  bool chartloader = false;
+  bool loader = false;
+  // getAnalysis() async {
+  //   // setState(() {
+  //   //   loader = true;
+  //   //   // chartloader = true;
+  //   // });
 
-    FirebaseFirestore.instance
-        .collection('sharedorders')
-        .get()
-        .then((QuerySnapshot querySnapshot) => {
-              querySnapshot.docs.forEach((doc) {
-                print(doc["TotalPaid"]);
-                var ty = doc["TotalPaid"];
-                setState(() {
-                  totalfastpay = totalfastpay + ty;
-                  apprevenue = totalfastpay + totalsharedpay;
-                  getpercent();
-                  // fastpercent = totalfastpay / apprevenue * 100;
-                  // sharedpercent = totalsharedpay / apprevenue * 100;
-                });
+  //   FirebaseFirestore.instance
+  //       .collection('sharedorders')
+  //       .get()
+  //       .then((QuerySnapshot querySnapshot) => {
+  //             querySnapshot.docs.forEach((doc) {
+  //               print(doc["TotalPaid"]);
+  //               var ty = doc["TotalPaid"];
+  //               setState(() {
+  //                 totalfastpay = totalfastpay + ty;
+  //                 apprevenue = totalfastpay + totalsharedpay;
+  //                 getpercent();
+  //                 // fastpercent = totalfastpay / apprevenue * 100;
+  //                 // sharedpercent = totalsharedpay / apprevenue * 100;
+  //               });
 
-                // var _lister = doc["TotalPaid"].toList();
-                // print(_lister.toString());
-                // // var _list = puffy.values.toList();
-                // fast.add(value)
-              })
-            });
-    FirebaseFirestore.instance
-        .collection('fastorders')
-        .get()
-        .then((QuerySnapshot querySnapshot) => {
-              querySnapshot.docs.forEach((doc) {
-                print(doc["TotalPaid"]);
-                var dy = doc["TotalPaid"];
-                setState(() {
-                  totalsharedpay = totalsharedpay + dy;
-                  apprevenue = totalfastpay + totalsharedpay;
-                  getpercent();
-                });
-              })
-            });
-    setState(() {
-      PieData.data.add(
-        Data(
-            name: 'Shared Orders', percent: 75, color: const Color(0xff0293ee)),
-      );
-      PieData.data.add(
-        Data(name: 'Fast Orders', percent: 25, color: const Color(0xff13d38e)),
-      );
-      loader = false;
-      chartloader = false;
-    });
-  }
+  //               // var _lister = doc["TotalPaid"].toList();
+  //               // print(_lister.toString());
+  //               // // var _list = puffy.values.toList();
+  //               // fast.add(value)
+  //             })
+  //           });
+  //   FirebaseFirestore.instance
+  //       .collection('fastorders')
+  //       .get()
+  //       .then((QuerySnapshot querySnapshot) => {
+  //             querySnapshot.docs.forEach((doc) {
+  //               print(doc["TotalPaid"]);
+  //               var dy = doc["TotalPaid"];
+  //               setState(() {
+  //                 totalsharedpay = totalsharedpay + dy;
+  //                 apprevenue = totalfastpay + totalsharedpay;
+  //                 getpercent();
+  //               });
+  //             })
+  //           });
+  //   setState(() {
+  //     // getpercent();
+  //     PieData.data.add(
+  //       Data(name: 'Shared Orders', percent: sharedpercent, color: Colors.red),
+  //     );
+  //     PieData.data.add(
+  //       Data(name: 'Fast Orders', percent: 25, color: const Color(0xff13d38e)),
+  //     );
+  //     loader = false;
+  //     chartloader = false;
+  //   });
+  // }
 
-  Future getpercent() {
-    setState(() {
-      fastpercent = totalfastpay / apprevenue * 100;
-      sharedpercent = totalsharedpay / apprevenue * 100;
-      print('FPercent' + fastpercent.toString());
-    });
+  // Future getpercent() {
+  //   setState(() {
+  //     fastpercent = totalfastpay / apprevenue * 100;
+  //     sharedpercent = totalsharedpay / apprevenue * 100;
+  //     print('FPercent' + fastpercent.toString());
+  //   });
 
-    setState(() {});
-  }
+  //   setState(() {});
+  // }
 
   @override
   void initState() {
+    PieData.data.clear();
     setState(() {
       loader = true;
+      PieData.data.add(
+        Data(
+            name: 'Shared Orders',
+            percent: double.parse(widget.spercent),
+            color: Colors.blue),
+      );
+      PieData.data.add(
+        Data(
+            name: 'Fast Orders',
+            percent: double.parse(widget.fpercent),
+            color: Colors.green),
+      );
     });
-    PieData.data.clear();
-    getAnalysis();
+
+    // getAnalysis();
     // getpercent();
     super.initState();
   }
@@ -98,83 +125,69 @@ class _RevenueState extends State<Revenue> {
     return Scaffold(
       appBar: AppBar(),
       body: Container(
-        child: loader == false
-            ? ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 28.0),
-                    child: Center(
-                      child: Card(
-                        elevation: 0,
-                        child: Text('Total Monthly Revenue: Ksh ' +
-                            apprevenue.toString()),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: DataTable(
-                      columns: [
-                        // DataColumn(label: Text('Depots')),
-                        DataColumn(label: Text('Fast')),
-                        DataColumn(label: Text('Shared')),
-                        DataColumn(label: Text('Total')),
-                      ],
-                      rows: [
-                        DataRow(cells: [
-                          // DataCell(Text('A')),
-                          DataCell(
-                              Text('ksh ' + totalsharedpay.toString() + '.00')),
-                          DataCell(
-                              Text('Ksh ' + totalfastpay.toString() + '.00')),
-                          DataCell(
-                              Text('Ksh ' + apprevenue.toString() + '.00')),
-                        ]),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 88.0),
-                    child: chartloader == false
-                        ? PieChart(
-                            PieChartData(
-                              pieTouchData: PieTouchData(
-                                touchCallback: (pieTouchResponse) {
-                                  setState(() {
-                                    if (pieTouchResponse.touchInput
-                                            is FlLongPressEnd ||
-                                        pieTouchResponse.touchInput
-                                            is FlPanEnd) {
-                                      touchedIndex = -1;
-                                    } else {
-                                      touchedIndex =
-                                          pieTouchResponse.touchedSectionIndex;
-                                    }
-                                  });
-                                },
-                              ),
-                              borderData: FlBorderData(show: false),
-                              sectionsSpace: 0,
-                              centerSpaceRadius: 40,
-                              sections: getSections(touchedIndex),
-                            ),
-                          )
-                        : Container(),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: IndicatorsWidget(),
-                      ),
-                    ],
-                  )
-                ],
-              )
-            : CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.deepOrange),
+          child: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 28.0),
+            child: Center(
+              child: Card(
+                elevation: 0,
+                child: Text('Total Monthly Revenue: Ksh ' +
+                    widget.apprevenue.toString()),
               ),
-      ),
+            ),
+          ),
+          Container(
+            child: DataTable(
+              columns: [
+                // DataColumn(label: Text('Depots')),
+                DataColumn(label: Text('Fast')),
+                DataColumn(label: Text('Shared')),
+                DataColumn(label: Text('Total')),
+              ],
+              rows: [
+                DataRow(cells: [
+                  // DataCell(Text('A')),
+                  DataCell(Text('ksh ' + widget.stotal.toString() + '.00')),
+                  DataCell(Text('Ksh ' + widget.ftotal.toString() + '.00')),
+                  DataCell(Text('Ksh ' + widget.apprevenue.toString() + '.00')),
+                ]),
+              ],
+            ),
+          ),
+          Padding(
+              padding: const EdgeInsets.only(top: 88.0),
+              child: PieChart(
+                PieChartData(
+                  pieTouchData: PieTouchData(
+                    touchCallback: (pieTouchResponse) {
+                      setState(() {
+                        if (pieTouchResponse.touchInput is FlLongPressEnd ||
+                            pieTouchResponse.touchInput is FlPanEnd) {
+                          touchedIndex = -1;
+                        } else {
+                          touchedIndex = pieTouchResponse.touchedSectionIndex;
+                        }
+                      });
+                    },
+                  ),
+                  borderData: FlBorderData(show: false),
+                  sectionsSpace: 0,
+                  centerSpaceRadius: 40,
+                  sections: getSections(touchedIndex),
+                ),
+              )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: IndicatorsWidget(),
+              ),
+            ],
+          )
+        ],
+      )),
     );
   }
 }

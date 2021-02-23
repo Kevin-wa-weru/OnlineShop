@@ -25,20 +25,6 @@ class Body extends StatelessWidget {
                 SizedBox(height: SizeConfig.screenHeight * 0.008),
                 SignUpForm(),
                 SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Administrator(),
-                        ));
-                  },
-                  child: Text(
-                    'Administrator',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.caption,
-                  ),
-                )
               ],
             ),
           ),
